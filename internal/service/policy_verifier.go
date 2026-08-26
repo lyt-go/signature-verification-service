@@ -13,7 +13,10 @@ type PolicyVerifier struct {
 }
 
 func NewPolicyVerifier(names []string) *PolicyVerifier {
-	return &PolicyVerifier{policy: config.LoadSignaturePolicy(names)}
+	return &PolicyVerifier{
+		policy:  config.LoadSignaturePolicy(names),
+		results: make(map[string]bool),
+	}
 }
 
 func (v *PolicyVerifier) Check(algorithm string) (bool, error) {
