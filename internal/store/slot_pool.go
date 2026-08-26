@@ -31,8 +31,12 @@ func (l *VerifyLease) Finish(success bool) { l.success = success }
 
 func (l *VerifyLease) Close() {
 	<-l.pool.sem
+	result := "success"
+	if !l.success {
+		result = "failure"
+	}
 	l.pool.mu.Lock()
-	l.pool.audits = append(l.pool.audits, "success")
+	l.pool.audits = append(l.pool.audits, result)
 	l.pool.mu.Unlock()
 }
 
