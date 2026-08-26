@@ -2,21 +2,14 @@ package store
 
 import (
 	"context"
-	"sync"
 )
 
-type VerificationProbe struct {
-	mu             sync.Mutex
-	requestContext context.Context
-}
+// VerificationProbe 用于等待验签就绪，直到 ready 通道关闭或 ctx 被取消。
+// 它不持有任何请求上下文：每次 Wait 只使用调用方传入的 ctx，
+// 避免一次取消的请求污染后续请求。
+type VerificationProbe struct{}
 
 func (p *VerificationProbe) Wait(ctx context.Context, ready <-chan struct{}) error {
-	p.mu.Lock()
-	if p.requestContext == nil {
-		p.requestContext = ctx
-	}
-	ctx = p.requestContext
-	p.mu.Unlock()
 	select {
 	case <-ready:
 		return nil

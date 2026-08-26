@@ -6,7 +6,7 @@ import (
 )
 
 func AwaitVerification(ctx context.Context, probe *store.VerificationProbe, ready <-chan struct{}) error {
-	return probe.Wait(context.Background(), ready)
+	return probe.Wait(ctx, ready)
 }
 
 func AwaitDirectVerification(ctx context.Context, probe *store.VerificationProbe, ready <-chan struct{}) error {
