@@ -33,6 +33,12 @@ func (v *VerifyRecord) Validate() error {
 	return nil
 }
 
+// Clone 返回 v 的深拷贝，用于 store 读写边界上的快照隔离。
+func (v *VerifyRecord) Clone() *VerifyRecord {
+	cp := *v
+	return &cp
+}
+
 type VerifyRecordFilter struct {
 	SignatureID string
 	Valid       *bool

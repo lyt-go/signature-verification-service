@@ -60,6 +60,13 @@ func (k *KeyPair) Validate() error {
 	return nil
 }
 
+// Clone 返回 k 的深拷贝。store 在读写边界上用它保证调用方拿到的总是独立
+// 快照，避免与内部存储共享指针而被后续更新篡改或引发并发读写冲突。
+func (k *KeyPair) Clone() *KeyPair {
+	cp := *k
+	return &cp
+}
+
 type KeyPairFilter struct {
 	Name      string
 	Algorithm string

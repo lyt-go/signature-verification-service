@@ -32,6 +32,12 @@ func (a *Algorithm) Validate() error {
 	return nil
 }
 
+// Clone 返回 a 的深拷贝，用于 store 读写边界上的快照隔离。
+func (a *Algorithm) Clone() *Algorithm {
+	cp := *a
+	return &cp
+}
+
 type AlgorithmFilter struct {
 	Name    string
 	Type    string

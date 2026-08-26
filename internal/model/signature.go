@@ -37,6 +37,12 @@ func (s *Signature) Validate() error {
 	return nil
 }
 
+// Clone 返回 s 的深拷贝，用于 store 读写边界上的快照隔离。
+func (s *Signature) Clone() *Signature {
+	cp := *s
+	return &cp
+}
+
 type SignatureFilter struct {
 	KeyPairID     string
 	Algorithm     string

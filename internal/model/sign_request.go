@@ -62,6 +62,17 @@ func (s *SignRequest) Validate() error {
 	return nil
 }
 
+// Clone 返回 s 的深拷贝，用于 store 读写边界上的快照隔离。
+// SignedAt 是指针字段，必须单独复制，否则快照间仍会共享该时间值。
+func (s *SignRequest) Clone() *SignRequest {
+	cp := *s
+	if s.SignedAt != nil {
+		t := *s.SignedAt
+		cp.SignedAt = &t
+	}
+	return &cp
+}
+
 type SignRequestFilter struct {
 	KeyPairID string
 	Algorithm string

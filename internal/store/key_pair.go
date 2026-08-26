@@ -7,7 +7,7 @@ import (
 func (s *MemoryStore) CreateKeyPair(k *model.KeyPair) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.keyPairs[k.ID] = k
+	s.keyPairs[k.ID] = k.Clone()
 	return nil
 }
 
@@ -18,7 +18,7 @@ func (s *MemoryStore) GetKeyPair(id string) (*model.KeyPair, error) {
 	if !ok {
 		return nil, ErrNotFound
 	}
-	return k, nil
+	return k.Clone(), nil
 }
 
 func (s *MemoryStore) ListKeyPairs() []*model.KeyPair {
@@ -26,7 +26,7 @@ func (s *MemoryStore) ListKeyPairs() []*model.KeyPair {
 	defer s.mu.RUnlock()
 	list := make([]*model.KeyPair, 0, len(s.keyPairs))
 	for _, k := range s.keyPairs {
-		list = append(list, k)
+		list = append(list, k.Clone())
 	}
 	return list
 }
@@ -37,7 +37,7 @@ func (s *MemoryStore) UpdateKeyPair(k *model.KeyPair) error {
 	if _, ok := s.keyPairs[k.ID]; !ok {
 		return ErrNotFound
 	}
-	s.keyPairs[k.ID] = k
+	s.keyPairs[k.ID] = k.Clone()
 	return nil
 }
 

@@ -68,6 +68,12 @@ func (c *Certificate) Validate() error {
 	return nil
 }
 
+// Clone 返回 c 的深拷贝，用于 store 读写边界上的快照隔离。
+func (c *Certificate) Clone() *Certificate {
+	cp := *c
+	return &cp
+}
+
 type CertificateFilter struct {
 	KeyPairID string
 	Status    string

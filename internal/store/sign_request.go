@@ -7,7 +7,7 @@ import (
 func (s *MemoryStore) CreateSignRequest(sr *model.SignRequest) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.signRequests[sr.ID] = sr
+	s.signRequests[sr.ID] = sr.Clone()
 	return nil
 }
 
@@ -18,7 +18,7 @@ func (s *MemoryStore) GetSignRequest(id string) (*model.SignRequest, error) {
 	if !ok {
 		return nil, ErrNotFound
 	}
-	return sr, nil
+	return sr.Clone(), nil
 }
 
 func (s *MemoryStore) ListSignRequests() []*model.SignRequest {
@@ -26,7 +26,7 @@ func (s *MemoryStore) ListSignRequests() []*model.SignRequest {
 	defer s.mu.RUnlock()
 	list := make([]*model.SignRequest, 0, len(s.signRequests))
 	for _, sr := range s.signRequests {
-		list = append(list, sr)
+		list = append(list, sr.Clone())
 	}
 	return list
 }
@@ -37,7 +37,7 @@ func (s *MemoryStore) UpdateSignRequest(sr *model.SignRequest) error {
 	if _, ok := s.signRequests[sr.ID]; !ok {
 		return ErrNotFound
 	}
-	s.signRequests[sr.ID] = sr
+	s.signRequests[sr.ID] = sr.Clone()
 	return nil
 }
 

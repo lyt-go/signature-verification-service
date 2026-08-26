@@ -7,7 +7,7 @@ import (
 func (s *MemoryStore) CreateSignature(sig *model.Signature) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.signatures[sig.ID] = sig
+	s.signatures[sig.ID] = sig.Clone()
 	return nil
 }
 
@@ -18,7 +18,7 @@ func (s *MemoryStore) GetSignature(id string) (*model.Signature, error) {
 	if !ok {
 		return nil, ErrNotFound
 	}
-	return sig, nil
+	return sig.Clone(), nil
 }
 
 func (s *MemoryStore) GetSignatureBySignRequestID(signRequestID string) (*model.Signature, error) {
@@ -26,7 +26,7 @@ func (s *MemoryStore) GetSignatureBySignRequestID(signRequestID string) (*model.
 	defer s.mu.RUnlock()
 	for _, sig := range s.signatures {
 		if sig.SignRequestID == signRequestID {
-			return sig, nil
+			return sig.Clone(), nil
 		}
 	}
 	return nil, ErrNotFound
@@ -37,7 +37,7 @@ func (s *MemoryStore) ListSignatures() []*model.Signature {
 	defer s.mu.RUnlock()
 	list := make([]*model.Signature, 0, len(s.signatures))
 	for _, sig := range s.signatures {
-		list = append(list, sig)
+		list = append(list, sig.Clone())
 	}
 	return list
 }
@@ -48,7 +48,7 @@ func (s *MemoryStore) UpdateSignature(sig *model.Signature) error {
 	if _, ok := s.signatures[sig.ID]; !ok {
 		return ErrNotFound
 	}
-	s.signatures[sig.ID] = sig
+	s.signatures[sig.ID] = sig.Clone()
 	return nil
 }
 

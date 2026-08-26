@@ -7,7 +7,7 @@ import (
 func (s *MemoryStore) CreateCertificate(c *model.Certificate) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.certificates[c.ID] = c
+	s.certificates[c.ID] = c.Clone()
 	return nil
 }
 
@@ -18,7 +18,7 @@ func (s *MemoryStore) GetCertificate(id string) (*model.Certificate, error) {
 	if !ok {
 		return nil, ErrNotFound
 	}
-	return c, nil
+	return c.Clone(), nil
 }
 
 func (s *MemoryStore) ListCertificates() []*model.Certificate {
@@ -26,7 +26,7 @@ func (s *MemoryStore) ListCertificates() []*model.Certificate {
 	defer s.mu.RUnlock()
 	list := make([]*model.Certificate, 0, len(s.certificates))
 	for _, c := range s.certificates {
-		list = append(list, c)
+		list = append(list, c.Clone())
 	}
 	return list
 }
@@ -37,7 +37,7 @@ func (s *MemoryStore) UpdateCertificate(c *model.Certificate) error {
 	if _, ok := s.certificates[c.ID]; !ok {
 		return ErrNotFound
 	}
-	s.certificates[c.ID] = c
+	s.certificates[c.ID] = c.Clone()
 	return nil
 }
 

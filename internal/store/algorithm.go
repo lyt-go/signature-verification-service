@@ -12,7 +12,7 @@ func (s *MemoryStore) CreateAlgorithm(a *model.Algorithm) error {
 			return ErrConflict
 		}
 	}
-	s.algorithms[a.ID] = a
+	s.algorithms[a.ID] = a.Clone()
 	return nil
 }
 
@@ -23,7 +23,7 @@ func (s *MemoryStore) GetAlgorithm(id string) (*model.Algorithm, error) {
 	if !ok {
 		return nil, ErrNotFound
 	}
-	return a, nil
+	return a.Clone(), nil
 }
 
 func (s *MemoryStore) GetAlgorithmByName(name string) (*model.Algorithm, error) {
@@ -31,7 +31,7 @@ func (s *MemoryStore) GetAlgorithmByName(name string) (*model.Algorithm, error) 
 	defer s.mu.RUnlock()
 	for _, a := range s.algorithms {
 		if a.Name == name {
-			return a, nil
+			return a.Clone(), nil
 		}
 	}
 	return nil, ErrNotFound
@@ -42,7 +42,7 @@ func (s *MemoryStore) ListAlgorithms() []*model.Algorithm {
 	defer s.mu.RUnlock()
 	list := make([]*model.Algorithm, 0, len(s.algorithms))
 	for _, a := range s.algorithms {
-		list = append(list, a)
+		list = append(list, a.Clone())
 	}
 	return list
 }
@@ -58,7 +58,7 @@ func (s *MemoryStore) UpdateAlgorithm(a *model.Algorithm) error {
 			return ErrConflict
 		}
 	}
-	s.algorithms[a.ID] = a
+	s.algorithms[a.ID] = a.Clone()
 	return nil
 }
 
