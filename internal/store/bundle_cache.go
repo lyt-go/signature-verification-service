@@ -29,7 +29,11 @@ func (c *BundleCache) Get(id string) (*CertificateBundle, error) {
 	if !ok {
 		return nil, ErrNotFound
 	}
-	_ = bundle.Certificate.Subject
+	// 拒绝读取残缺包：未校验通过的组合包即便因历史 bug 被写入缓存，
+	// 这里也不会返回，更不会因为字段为 nil 而触发 panic。
+	if err := ValidateBundle(bundle); err != nil {
+		return nil, err
+	}
 	return bundle, nil
 }
 func ValidateBundle(bundle *CertificateBundle) error {
